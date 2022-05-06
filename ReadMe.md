@@ -1,6 +1,6 @@
 ﻿# Random Towers And Upgrades
 
-BTD6 Mod that can randomize towers in a few ways and can also randomizes upgrades.
+BTD6 Mod that can randomize towers in a few ways and can also randomizes upgrades. <a href="https://github.com/gurrenm3/BTD-Mod-Helper">Requires Mod helper</a>
 
 Was based off from gurrenm4's old random towers mod but it doesn't really resemble it at all now
 
