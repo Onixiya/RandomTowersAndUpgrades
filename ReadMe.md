@@ -1,4 +1,4 @@
-﻿#Random Towers And Upgrades
+﻿# Random Towers And Upgrades
 
 BTD6 Mod that can randomize towers in a few ways and can also randomizes upgrades.
 
@@ -26,7 +26,7 @@ Allows you to randomize all towers by pressing a certain key. Must be a valid Un
 Refer to the list below for a full list of the available ones you can set it to. Default is 305 which
 Corresponds to Right Control so if you want to change it to space bar for example, change this to 32
 
-#KeyCodes
+# KeyCodes
 
 // <Enum value> = <int value>, // <Hex value>
 
