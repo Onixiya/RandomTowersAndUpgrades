@@ -11,10 +11,12 @@ using BTD_Mod_Helper.Extensions;
 using Assets.Scripts.Models.Towers.Behaviors;
 using Assets.Scripts.Simulation;
 using Assets.Scripts.Unity.UI_New.InGame;
-[assembly: MelonInfo(typeof(RandomTowersAndUpgrades.ModMain),"Random Towers and Upgrades","1.0.0","Silentstorm")]
+using System.Linq;
+[assembly: MelonInfo(typeof(RandomTowersAndUpgrades.ModMain),"Random Towers and Upgrades","1.1.0","Silentstorm")]
 [assembly: MelonGame("Ninja Kiwi","BloonsTD6")]
 namespace RandomTowersAndUpgrades{
     public class ModMain:BloonsTD6Mod{
+        public override string GithubReleaseURL=>"https://api.github.com/repos/Onixiya/RandomTowersAndUpgrades/releases";
         public static ModSettingBool RandomTowerOnPlace=new ModSettingBool(false);
         public static ModSettingBool RandomUpgrades=new ModSettingBool(false);
         public static ModSettingBool RandomizeInRound=new ModSettingBool(true);
@@ -27,7 +29,7 @@ namespace RandomTowersAndUpgrades{
         private static MelonLogger.Instance mllog=new MelonLogger.Instance("Random Towers and Upgrades");
         public static string PreviousTower;
         public static string[]BlacklistedTowerNames=new string[]{
-            "Sentry","Spectre","Plane","UAV","UCAV","AvatarMini","Totem","Phoenix","Drone","BallOfLight","HeliPilot-005"
+            "Sentry","Spectre","Plane","UAV","UCAV","AvatarMini","Totem","Phoenix","Drone","BallOfLight","HeliPilot-005","HeliPilot-004"
         };
         public static void Log(object thingtolog,string type="msg"){
             switch(type){
@@ -42,7 +44,10 @@ namespace RandomTowersAndUpgrades{
                     break;
             }
         }
-        public static TowerModel GetRandomTowerModel(){
+        public static TowerModel GetRandomTowerModel(TowerModel towermodel){
+            if(BlacklistedTowerNames.Contains(towermodel.name)){
+                return towermodel;
+            }
             TowerModel[]towermodels=Game.instance.model.towers;
             TowerModel tower=towermodels[new Random().Next(0,towermodels.Length+1)];
             if(AllowRecursion==false){
@@ -65,7 +70,7 @@ namespace RandomTowersAndUpgrades{
                     var towers=InGame.Bridge.simulation.towerManager.GetTowers();
                     if(towers.Count()!=0){
                         towers.ForEach(tower=>{
-                            tower.UpdateRootModel(GetRandomTowerModel());
+                            tower.UpdateRootModel(GetRandomTowerModel(tower.towerModel));
                         });
                     }
                 }
@@ -75,7 +80,7 @@ namespace RandomTowersAndUpgrades{
                         if(Timer>RandomizeTimer){
                             var towers=InGame.Bridge.simulation.towerManager.GetTowers();
                             towers.ForEach(tower=>{
-                                tower.UpdateRootModel(GetRandomTowerModel());
+                                tower.UpdateRootModel(GetRandomTowerModel(tower.towerModel));
                             });
                             Timer=0;
                         }
@@ -88,7 +93,7 @@ namespace RandomTowersAndUpgrades{
             [HarmonyPrefix]
             public static void Prefix(ref TowerModel def){
                 if(RandomUpgrades==true){
-                    def=GetRandomTowerModel();
+                    def=GetRandomTowerModel(def);
                 }
             }
         }
@@ -101,7 +106,7 @@ namespace RandomTowersAndUpgrades{
                     var towers=InGame.Bridge.simulation.towerManager.GetTowers();
                     if(towers.Count()!=0){
                         towers.ForEach(tower=>{
-                            tower.UpdateRootModel(GetRandomTowerModel());
+                            tower.UpdateRootModel(GetRandomTowerModel(tower.towerModel));
                         });
                     }
                 }
@@ -119,7 +124,7 @@ namespace RandomTowersAndUpgrades{
             [HarmonyPrefix]
             public static bool Prefix(ref Model modelToUse){
                 if(RandomTowerOnPlace==true){
-                    modelToUse=GetRandomTowerModel();
+                    modelToUse=GetRandomTowerModel(modelToUse.Cast<TowerModel>());
                 }
                 return true;
             }
