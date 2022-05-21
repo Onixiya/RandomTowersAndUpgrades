@@ -12,6 +12,7 @@ using Assets.Scripts.Models.Towers.Behaviors;
 using Assets.Scripts.Simulation;
 using Assets.Scripts.Unity.UI_New.InGame;
 using System.Linq;
+using System.Text.RegularExpressions;
 [assembly: MelonInfo(typeof(RandomTowersAndUpgrades.ModMain),"Random Towers and Upgrades","1.1.0","Silentstorm")]
 [assembly: MelonGame("Ninja Kiwi","BloonsTD6")]
 namespace RandomTowersAndUpgrades{
@@ -22,14 +23,14 @@ namespace RandomTowersAndUpgrades{
         public static ModSettingBool RandomizeInRound=new ModSettingBool(true);
         public static ModSettingBool RandomizeOnRoundStart=new ModSettingBool(false);
         public static ModSettingInt RandomizeTimer=new ModSettingInt(20);
-        public static ModSettingBool AllowRecursion=new ModSettingBool(false);
+        public static ModSettingBool IgnoreBlacklist=new ModSettingBool(false);
         public static ModSettingString RandomKey=new ModSettingString("305");
         public static bool RoundOn=false;
         public static float Timer=0;
         private static MelonLogger.Instance mllog=new MelonLogger.Instance("Random Towers and Upgrades");
         public static string PreviousTower;
         public static string[]BlacklistedTowerNames=new string[]{
-            "Sentry","Spectre","Plane","UAV","UCAV","AvatarMini","Totem","Phoenix","Drone","BallOfLight","HeliPilot-005","HeliPilot-004"
+            "Sentry","Spectre","Plane","UAV","UCAV","AvatarMini","Totem","Phoenix","Drone","BallOfLight","HeliPilot-<012>5","HeliPilot-<012>4"
         };
         public static void Log(object thingtolog,string type="msg"){
             switch(type){
@@ -45,25 +46,28 @@ namespace RandomTowersAndUpgrades{
             }
         }
         public static TowerModel GetRandomTowerModel(TowerModel towermodel){
-            if(BlacklistedTowerNames.Contains(towermodel.name)){
-                return towermodel;
-            }
             TowerModel[]towermodels=Game.instance.model.towers;
             TowerModel tower=towermodels[new Random().Next(0,towermodels.Length+1)];
-            if(AllowRecursion==false){
+            if(IgnoreBlacklist==true){
                 foreach(string name in BlacklistedTowerNames){
-                    while(tower.name.Contains(name)){
+                    if(Regex.IsMatch(towermodel.name,name)){
+                        return towermodel;
+                    }
+                    while(Regex.IsMatch(tower.name,name)){
                         tower=towermodels[new Random().Next(0,towermodels.Length+1)];
                     }
                 }
-            }
-            while(tower.HasBehavior<TowerExpireModel>()||tower.HasBehavior<HeroModel>()||tower.name==PreviousTower){
+                while(tower.HasBehavior<TowerExpireModel>()||tower.HasBehavior<HeroModel>()||tower.name==PreviousTower){
+                    tower=towermodels[new Random(tower.behaviors.Count).Next(0,towermodels.Length+1)];
+                }
+                PreviousTower=tower.name;
+                return tower;
+            }else{
                 tower=towermodels[new Random().Next(0,towermodels.Length+1)];
+                PreviousTower=tower.name;
+                return tower;
             }
-            PreviousTower=tower.name;
-            return tower;
         }
-
         public override void OnUpdate(){
             if(InGame.Bridge!=null){
                 if(UnityEngine.Input.GetKeyDown((UnityEngine.KeyCode)int.Parse((string)RandomKey.GetValue()))){
