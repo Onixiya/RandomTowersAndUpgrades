@@ -13,7 +13,7 @@ using Assets.Scripts.Simulation;
 using Assets.Scripts.Unity.UI_New.InGame;
 using System.Linq;
 using System.Text.RegularExpressions;
-[assembly: MelonInfo(typeof(RandomTowersAndUpgrades.ModMain),"Random Towers and Upgrades","1.1.0","Silentstorm")]
+[assembly: MelonInfo(typeof(RandomTowersAndUpgrades.ModMain),"Random Towers and Upgrades","1.2.0","Silentstorm")]
 [assembly: MelonGame("Ninja Kiwi","BloonsTD6")]
 namespace RandomTowersAndUpgrades{
     public class ModMain:BloonsTD6Mod{
