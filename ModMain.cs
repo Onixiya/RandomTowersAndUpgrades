@@ -13,7 +13,7 @@ using Assets.Scripts.Simulation;
 using Assets.Scripts.Unity.UI_New.InGame;
 using System.Linq;
 using System.Text.RegularExpressions;
-[assembly: MelonInfo(typeof(RandomTowersAndUpgrades.ModMain),"Random Towers and Upgrades","1.2.0","Silentstorm")]
+[assembly: MelonInfo(typeof(RandomTowersAndUpgrades.ModMain),"Random Towers and Upgrades","1.2.1","Silentstorm")]
 [assembly: MelonGame("Ninja Kiwi","BloonsTD6")]
 namespace RandomTowersAndUpgrades{
     public class ModMain:BloonsTD6Mod{
@@ -48,7 +48,7 @@ namespace RandomTowersAndUpgrades{
         public static TowerModel GetRandomTowerModel(TowerModel towermodel){
             TowerModel[]towermodels=Game.instance.model.towers;
             TowerModel tower=towermodels[new Random().Next(0,towermodels.Length+1)];
-            if(IgnoreBlacklist==true){
+            if(IgnoreBlacklist==false){
                 foreach(string name in BlacklistedTowerNames){
                     if(Regex.IsMatch(towermodel.name,name)){
                         return towermodel;
