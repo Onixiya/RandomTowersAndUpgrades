@@ -1,0 +1,6 @@
+Name = "Random Towers and Upgrades"
+Description = "Randomizes towers and upgrading towers in a few ways"
+Version = "1.2.2"
+RepoName = "RandomTowersAndUpgrades"
+RepoOwner = "Onixiya"
+Author = "Silentstorm"

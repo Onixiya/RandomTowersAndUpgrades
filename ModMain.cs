@@ -13,25 +13,28 @@ using Assets.Scripts.Simulation;
 using Assets.Scripts.Unity.UI_New.InGame;
 using System.Linq;
 using System.Text.RegularExpressions;
-[assembly: MelonInfo(typeof(RandomTowersAndUpgrades.ModMain),"Random Towers and Upgrades","1.2.1","Silentstorm")]
+[assembly: MelonInfo(typeof(RandomTowersAndUpgrades.ModMain),"Random Towers and Upgrades","1.2.2","Silentstorm")]
 [assembly: MelonGame("Ninja Kiwi","BloonsTD6")]
 namespace RandomTowersAndUpgrades{
     public class ModMain:BloonsTD6Mod{
         public override string GithubReleaseURL=>"https://api.github.com/repos/Onixiya/RandomTowersAndUpgrades/releases";
         public static ModSettingBool RandomTowerOnPlace=new ModSettingBool(false);
         public static ModSettingBool RandomUpgrades=new ModSettingBool(false);
-        public static ModSettingBool RandomizeInRound=new ModSettingBool(true);
+        public static ModSettingBool RandomizeInRound=new ModSettingBool(false);
         public static ModSettingBool RandomizeOnRoundStart=new ModSettingBool(false);
         public static ModSettingInt RandomizeTimer=new ModSettingInt(20);
         public static ModSettingBool IgnoreBlacklist=new ModSettingBool(false);
         public static ModSettingString RandomKey=new ModSettingString("305");
         public static bool RoundOn=false;
         public static float Timer=0;
-        private static MelonLogger.Instance mllog=new MelonLogger.Instance("Random Towers and Upgrades");
+        private static MelonLogger.Instance mllog;
         public static string PreviousTower;
         public static string[]BlacklistedTowerNames=new string[]{
             "Sentry","Spectre","Plane","UAV","UCAV","AvatarMini","Totem","Phoenix","Drone","BallOfLight","HeliPilot-<012>5","HeliPilot-<012>4"
         };
+        public override void OnInitializeMelon(){
+            mllog=LoggerInstance;
+        }
         public static void Log(object thingtolog,string type="msg"){
             switch(type){
                 case"msg":
@@ -107,7 +110,7 @@ namespace RandomTowersAndUpgrades{
             public static void Postfix(ref Simulation __instance){
                 RoundOn=true;
                 if(RandomizeOnRoundStart==true){
-                    var towers=InGame.Bridge.simulation.towerManager.GetTowers();
+                    var towers=__instance.towerManager.GetTowers();
                     if(towers.Count()!=0){
                         towers.ForEach(tower=>{
                             tower.UpdateRootModel(GetRandomTowerModel(tower.towerModel));
